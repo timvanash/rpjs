@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head >
+    <script type =" text/ javascript">
+      var Main=
+        {
+          heights:undefined,
+          nextHeights:undefined,
+          starMap:undefined,
+          nextStarMap:undefined,
+          canvas:undefined,
+          c:undefined,
+          offset:0,
+          init:function()
+          {
+            Main.heights = Main.generateHeights();
+            Main.nextHeights = Main.generateHeights();
+            Main.starMap = Main.generateStarMap();
+            Main.nextStarMap = Main.generateStarMap();
+            Main.canvas = document.getElementById(' canvas');
+            Main.canvas.width = window.innerWidth;
+            Main.canvas.height = window.innerHeight;
+            Main.c = canvas.getContext(' 2d');
+            setInterval( Main.update, 25);
+          }
+          ,update : function()
+            {
+              if( Main.offset >= Main.canvas.width)
+              {
+                Main.offset = 5;
+                Main.heights = Main.nextHeights;
+                Main.nextHeights = Main.generateHeights();
+                Main.starMap = Main.nextStarMap;
+                Main.nextStarMap = Main.generateStarMap();
+              }
+              else
+              {
+                Main.offset += 5;
+              }
+              Main.drawHeights();
+              }
+              ,generateHeights:function()
+              {
+                var heights=[0];
+                for( var iter=0; iter<10; iter++)
+                {
+                  var newHeights=[];
+                  for(var i=0; i<heights.length*2; i++)
+                  {
+                    if(i%2==1)
+                    {
+                      newHeights.push(heights[ Math.floor( i/2)]);
+                    }
+                    else
+                    {
+                      if(i===0)
+                      {
+                        newHeights.push(heights[Math.floor(i/2)]/2+(Math.random()-0.5)*2/(Math.pow(2,iter)));
+                      }
+                      else
+                      {
+                        newHeights.push((heights[Math.floor(i/2)-1]+heights[Math.floor(i/2)])/2+(Math.random()-0.5)*2/(Math.pow(2,iter)));
+                      }
+                    }
+                  }
+                  heights=newHeights;
+                }
+                return heights;
+              }
+              ,generateStarMap:function()
+              {
+                var starMap=[];
+                for(var i=0; i<1000; i++)
+                {
+                  starMap.push({x:canvas.width*Math.random(), y:canvas.height*Math.random()});
+                }
+                return starMap;
+              }
+              ,drawHeights:function()
+              {
+                var grd = Main.c.createLinearGradient( Main.canvas.width/2, Main.canvas.height, Main.canvas.width/2, -100);
+                grd.addColorStop(0, 'rgb(254, 160, 60)');
+                grd.addColorStop(0.3, 'rgb(153, 125, 121)');
+                grd.addColorStop(0.7, 'rgb(46, 50, 88)');
+                grd.addColorStop(1, '#000000');
+                Main.c.fillStyle=grd;
+                Main.c.fillRect(0, 0, Main.canvas.width, Main.canvas.height);
+                Main.c.fillStyle="# FFFFFF";
+                for(var i=0;i< Main.starMap.length;i++)
+                {
+                  Main.c.fillRect(Main.starMap[ i]. x-Main.offset, Main.starMap[i].y, 1, 1);
+                }
+                for(i=0; i<Main.nextStarMap.length;i++)
+                {
+                  Main.c.fillRect(Main.nextStarMap[i].x-Main.offset+Main.canvas.width, Main.nextStarMap[i].y, 1, 1);
+                }
+                Main.c.beginPath();
+                Main.c.moveTo(-Main.offset, Main.canvas.height/ 2);
+                for( i=0; i<Main.heights.length; i++)
+                {
+                  Main.c.lineTo((i+1)/Main.heights.length*Main.canvas.width-Main.offset,(Main.canvas.height/2)*Main.heights[i]+Main.canvas.height/2);
+                }
+                Main.c.lineTo(Main.canvas.width-Main.offset, Main.canvas.height);
+                for( i = 0; i<Main.nextHeights.length; i++)
+                {
+                  Main.c.lineTo((i+1)/Main.nextHeights.length*Main.canvas.width-Main.offset+Main.canvas.width, (Main.canvas.height/2)*Main.nextHeights[i]+Main.canvas.height/2);
+                }
+                Main.c.lineTo(Main.canvas.width, Main.canvas.height);
+                Main.c.lineTo( 0, canvas.height);
+                Main.c.fillStyle ='#000000';
+                Main.c.fill();
+              }
+            };
+            </script>
+            </head>
+            <body style ='overflow:hidden; position:fixed; margin:0; padding:0' onload ='Main.init();'>
+              <canvas id ='canvas' width ='1600' height ='900' style ='border:1px solid black'> </canvas>
+            </body>
+          </html>

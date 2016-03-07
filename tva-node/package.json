@@ -1,0 +1,9 @@
+{
+  "name": "TVA_Test_Node_Project",
+  "version": "1.2.0",
+  "description": "learning node tst project",
+  "dependencies": {
+    "mime":"1.2.11",
+    "socket.io":"1.1.0"
+  }
+}
